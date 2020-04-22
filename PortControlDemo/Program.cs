@@ -16,7 +16,7 @@ namespace PortControlDemo
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmPortControl());
+            Application.Run(new FrmPortControl()); 
         }
     }
 }
