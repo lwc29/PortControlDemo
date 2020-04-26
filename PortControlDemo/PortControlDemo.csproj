@@ -53,6 +53,7 @@
       <DependentUpon>FrmPortControl.cs</DependentUpon>
     </Compile>
     <Compile Include="PortControlHelper.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FrmPortControl.resx">
       <DependentUpon>FrmPortControl.cs</DependentUpon>

@@ -39,8 +39,8 @@ namespace PortControlDemo
         public PortControlHelper()
         {
             PortNameArr = SerialPort.GetPortNames();
+
             sp = new SerialPort();
-            //sp.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
         }
 
         /// <summary>
@@ -57,22 +57,48 @@ namespace PortControlDemo
             {
                 sp.PortName = portName;
                 sp.BaudRate = boudRate;
+                sp.Parity =  System.IO.Ports.Parity.None;
                 sp.DataBits = dataBit;
                 sp.StopBits = (StopBits)stopBit;
                 sp.ReadTimeout = timeout;
+                
+                sp.WriteTimeout = 3000;
+
+                sp.NewLine = "/r/n";
+                sp.RtsEnable = true;//根据实际情况吧。
+                sp.ReceivedBytesThreshold = 1;
+                
+                sp.DataReceived +=  DataReceivedHandler;
+                sp.ErrorReceived += Sp_ErrorReceived;
+                
                 sp.Open();
+               
                 PortState = true;
-                if (sp.IsOpen)
-                {
-                    sp.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
-                }
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-         
+
+        private void Sp_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)sender;
+            string indata = sp.ReadExisting();
+            Console.WriteLine("Data Received:");
+            Console.Write(indata);
+        }
+
+        private void DataReceivedHandler(
+                        object sender,
+                        SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)sender;
+            string indata = sp.ReadExisting();
+            Console.WriteLine("Data Received:");
+            Console.Write(indata);
+        }
+
 
         /// <summary>
         /// 关闭端口
@@ -99,7 +125,9 @@ namespace PortControlDemo
             try
             {
                 sp.Encoding = EncodingType;
-                sp.Write(sendData);
+                sp.WriteLine(sendData);
+                //byte[] B = new byte[3] { 0x4d, 0x30, 0x0d };
+                //sp.Write(B, 0, 3);
             }
             catch (Exception e)
             {

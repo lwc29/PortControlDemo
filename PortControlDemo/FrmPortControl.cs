@@ -10,7 +10,7 @@ namespace PortControlDemo
         int[] DataBitArr = new int[] { 6, 7, 8 };
         int[] StopBitArr = new int[] { 1, 2, 3};
         int[] TimeoutArr = new int[] { 500, 1000, 2000, 5000, 10000 };
-        object[] CheckBitArr = new object[] { "None", "ModbusCRC16"};
+        object[] CheckBitArr = new object[] { "N", "ModbusCRC16"};
         private bool ReceiveState = false;
         private PortControlHelper pchSend;
         private PortControlHelper pchReceive;
@@ -23,7 +23,7 @@ namespace PortControlDemo
         private void InitView()
         {
             cb_portNameSend.DataSource = pchSend.PortNameArr;
-            cb_portNameReceive.DataSource = pchReceive.PortNameArr;
+            //cb_portNameReceive.DataSource = "";// pchReceive.PortNameArr;
             cb_baudRate.DataSource = BaudRateArr;
             cb_dataBit.DataSource = DataBitArr;
             cb_stopBit.DataSource = StopBitArr;
@@ -31,7 +31,8 @@ namespace PortControlDemo
             cb_timeout.DataSource = TimeoutArr;
             cb_baudRate.SelectedIndex = 5;
             cb_dataBit.SelectedIndex = 2;
-            FreshBtnState(pchSend.PortState && pchReceive.PortState);
+            FreshBtnState(pchSend.PortState);
+            //FreshBtnState(pchSend.PortState && pchReceive.PortState);
         }
 
         /// <summary>
@@ -60,8 +61,9 @@ namespace PortControlDemo
         {
             InitializeComponent();
             pchSend = new PortControlHelper();
-            pchReceive = new PortControlHelper();
+            //pchReceive = new PortControlHelper();
             InitView();
+            
         }
 
         /// <summary>
@@ -81,19 +83,20 @@ namespace PortControlDemo
         /// <param name="e"></param>
         private void Btn_receive_Click(object sender, EventArgs e)
         {
-            if (ReceiveState)
-            {
-                pchReceive.OnComReceiveDataHandler -= new PortControlHelper.ComReceiveDataHandler(ComReceiveData);
-                Btn_receive.Text = "开始接收";
-                ReceiveState = false;
-            }
-            else
-            {
+            //if (ReceiveState)
+            //{
+            //    pchSend.OnComReceiveDataHandler -= new PortControlHelper.ComReceiveDataHandler(ComReceiveData);
+            //    Btn_receive.Text = "开始接收";
+            //    ReceiveState = false;
+            //}
+            //else
+            //{
 
-                pchReceive.OnComReceiveDataHandler += new PortControlHelper.ComReceiveDataHandler(ComReceiveData);
-                Btn_receive.Text = "停止接收";
-                ReceiveState = true;
-            }
+            pchSend.OnComReceiveDataHandler += new PortControlHelper.ComReceiveDataHandler(ComReceiveData);
+            Btn_receive.Text = "停止接收";
+            ReceiveState = true;
+            //}
+            //ComReceiveData();
         }
 
         /// <summary>
@@ -103,13 +106,13 @@ namespace PortControlDemo
         /// <param name="e"></param>
         private void Btn_open_Click(object sender, EventArgs e)
         {
-            if (pchSend.PortState)
-            {
-                pchSend.ClosePort();
-                pchReceive.ClosePort();
-            }
-            else
-            {
+            //if (pchSend.PortState)
+            //{
+            //    pchSend.ClosePort();
+            //    pchReceive.ClosePort();
+            //}
+            //else
+            //{
                 pchSend.OpenPort(cb_portNameSend.Text, int.Parse(cb_baudRate.Text),
                     int.Parse(cb_dataBit.Text), int.Parse(cb_stopBit.Text),
                     int.Parse(cb_timeout.Text));
@@ -117,8 +120,8 @@ namespace PortControlDemo
                 //   int.Parse(cb_dataBit.Text), int.Parse(cb_stopBit.Text),
                 //   int.Parse(cb_timeout.Text));
 
-            }
-            FreshBtnState(pchSend.PortState && pchReceive.PortState);
+            //}
+            FreshBtnState(pchSend.PortState );//&& pchReceive.PortState
            // pchReceive.OnComReceiveDataHandler += new PortControlHelper.ComReceiveDataHandler(ComReceiveData);
             //Btn_receive.Text = "停止接收";
             ReceiveState = true;
